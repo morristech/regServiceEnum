@@ -8,16 +8,16 @@ This script will perform a full enumeration of Windows services, as well as disp
 
 Everything is done via the registry and there is never a call to the *ServiceController*. 
 
-Example Output:
+Just run the binary with no command line arguments.
 ****
+## Example Output:
 **Locating exploitable vectors**
-![alt text](https://github.com/itsKindred/regServiceEnum/images/exploitable_vectors.png "Exploitable Vectors")
+![Exploitable Vectors ](https://github.com/itsKindred/regServiceEnum/blob/master/images/exploitable_vectors.PNG)
 
 **Generic Service Enumeration Example**
-![alt text](https://github.com/itsKindred/regServiceEnum/images/sample_service.png "Sample Service")
-
-To-Do:
+![Sample Service](https://github.com/itsKindred/regServiceEnum/blob/master/images/sample_service.PNG)
 ****
+## To-Do:
 - [ ] Add checks for Domain Users/Groups
 - [ ] Build in option to specify a user to check for, not just your current user.
 - [ ] Command line arguments to specify what to check for and what to output.
