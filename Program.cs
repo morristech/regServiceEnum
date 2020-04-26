@@ -185,6 +185,18 @@ namespace serviceEnum
                 catch (Exception) { imageExecutable["args"] = null; }
             }
 
+            else if (imagePath.ToLower().Contains(".bat"))
+            {
+
+                String[] parts = imagePath.Split(new[] { ".bat" }, StringSplitOptions.None);
+                imageExecutable["file"] = parts[0] + ".bat";
+                try
+                {
+                    imageExecutable["args"] = parts[1];
+                }
+                catch (Exception) { imageExecutable["args"] = null; }
+            }
+
             return imageExecutable;
         }
 
@@ -350,7 +362,7 @@ namespace serviceEnum
                 if (config.ContainsKey("ImagePath"))
                 {
                     string iPath = config["ImagePath"].ToString();
-                    if (iPath.Contains(".exe"))
+                    if (iPath.Contains(".exe") || iPath.Contains(".bat") ) 
                     {
                         Dictionary<string, string> iExecutable = imagePathToExecutable(iPath);
                         string iExe = iExecutable["file"];
