@@ -409,7 +409,7 @@ namespace serviceEnum
                             // are exploitable (need to add support for when a SID is specified.
                             if (rule.Key.Equals(myUser))
                             {
-                                exploitablePerms.Concat(checkPermissions(rule.Value));
+                                exploitablePerms.AddRange(checkPermissions(rule.Value));
                             }
 
                             // if the identity is a group, we want to check if our current user is in that group,
@@ -420,13 +420,14 @@ namespace serviceEnum
                                 List<string> members = getGroupMembers(rule.Key);
                                 if (members.Contains(myUser))
                                 {
-                                    exploitablePerms.Concat(checkPermissions(rule.Value));
+                                    exploitablePerms.AddRange(checkPermissions(rule.Value));
                                 }
                             }
 
                             // if we have any exploitable perms, tell the user.
                             if (exploitablePerms.Count > 0)
                             {
+                                
                                 string permString = string.Join(",", exploitablePerms);
                                 printFileModifiableAlert(service.Name, config, iExecutable, permString, myUser);
 
@@ -518,13 +519,13 @@ namespace serviceEnum
                         List<string> members = getGroupMembers(identity);
                         if (members.Contains(myUser))
                         {
-                            exploitablePerms.Concat(checkPermissions(right));
+                            exploitablePerms.AddRange(checkPermissions(right));
                         }
                     }
                     else if (identity.Equals(myUser))
                     {
-                        exploitablePerms.Concat(checkPermissions(right));
-                       
+                        exploitablePerms.AddRange(checkPermissions(right));
+
                     }
 
                     if (exploitablePerms.Count > 0)
