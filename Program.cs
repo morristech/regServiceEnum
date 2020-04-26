@@ -386,10 +386,11 @@ namespace serviceEnum
             string myUser = Environment.UserName;
             List<RegistryKey> services = getServices();
             List<string> groups = getGroupIdentities();
-
+            
             foreach (RegistryKey service in services)
             {
                 Dictionary<string, object> config = getServiceConfig(service);
+                List<string> exploitablePerms = new List<string> { };
                 if (config.ContainsKey("ImagePath"))
                 {
                     string iPath = config["ImagePath"].ToString();
@@ -402,7 +403,7 @@ namespace serviceEnum
                         string iExe = iExecutable["file"];
                         string iArgs = iExecutable["args"];
                         Dictionary<string, string> fileAccessRules = getAccessRules(iExe);
-                        List<string> exploitablePerms = new List<string> { };
+                        
                         foreach (KeyValuePair<string, string> rule in fileAccessRules)
                         {
                             // If there's a rule specifically for our user, check if those given permissions
@@ -423,17 +424,16 @@ namespace serviceEnum
                                     exploitablePerms.AddRange(checkPermissions(rule.Value));
                                 }
                             }
-
-                            // if we have any exploitable perms, tell the user.
-                            if (exploitablePerms.Count > 0)
-                            {
-                                
-                                string permString = string.Join(",", exploitablePerms);
-                                printFileModifiableAlert(service.Name, config, iExecutable, permString, myUser);
-
-                            }
                         }
-                    }
+                        
+                        // if we have any exploitable perms, tell the user.
+                        if (exploitablePerms.Count > 0)
+                        {
+                            string permString = string.Join(",", exploitablePerms);
+                            printFileModifiableAlert(service.Name, config, iExecutable, permString, myUser);
+
+                        }
+                    }    
                 }
             }
         }
@@ -494,7 +494,7 @@ namespace serviceEnum
                 Dictionary<string, object> config = getServiceConfig(service);
                 RegistrySecurity regSecurity = service.GetAccessControl();
                 AuthorizationRuleCollection rules = regSecurity.GetAccessRules(true, true, (account).GetType());
-
+                List<string> exploitablePerms = new List<string> { };
                 foreach (RegistryAccessRule rule in rules)
                 {
                     // Some identities have the BUILTIN\ prefix; this get's rid out it if it is there,
@@ -511,7 +511,6 @@ namespace serviceEnum
                     }
 
                     string right = rule.RegistryRights.ToString();
-                    List<string> exploitablePerms = new List<string> { };
 
                     // Checks if the identity is a group; if so, check if our user is within that group.
                     if (groups.Contains(identity))
@@ -527,13 +526,14 @@ namespace serviceEnum
                         exploitablePerms.AddRange(checkPermissions(right));
 
                     }
+           
+                }
 
-                    if (exploitablePerms.Count > 0)
-                    {
-                        string permString = string.Join(",", exploitablePerms);
-                        printServiceModifiableAlert(service.Name, config, permString, myUser);
+                if (exploitablePerms.Count > 0)
+                {
+                    string permString = string.Join(",", exploitablePerms);
+                    printServiceModifiableAlert(service.Name, config, permString, myUser);
 
-                    }
                 }
 
             }
