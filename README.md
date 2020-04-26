@@ -5,3 +5,5 @@ This script will perform a full enumeration of Windows services, as well as disp
 * Unquoted Service Path
 * Modifiable Service Executable
 * Modifiable Service
+
+Everything is done via the registry and there is never a call to the *ServiceController*. 
